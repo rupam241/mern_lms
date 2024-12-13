@@ -1,7 +1,16 @@
 import React, { useState } from "react";
-
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  signInStart,
+  signInFailure,
+  signInSuccess,
+} from "@/redux/user/userSlice";
+import ToastNotification from "@/utils/ToastNotification";
 
 function Login() {
+  const dispatch = useDispatch();
+  const navigate=useNavigate()
   const [activeTab, setActiveTab] = useState("signup");
   const [signupdata, setsignupdata] = useState({
     username: "",
@@ -24,21 +33,48 @@ function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(signupdata), 
+        body: JSON.stringify(signupdata),
       });
-  
+      const data = await response.json();
       if (!response.ok) {
         throw new Error("Failed to signup");
       }
-  
-      const data = await response.json(); 
-      console.log("Signup successful:", data);
-      setActiveTab("login")
+
+      <ToastNotification message={message}/>
+      setActiveTab("login");
     } catch (error) {
       console.error("Error during signup:", error.message);
     }
   };
-  
+
+  const handleSignIn = async () => {
+    try {
+      dispatch(signInStart);
+      const response = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(signupdata),
+      });
+
+      if (!response.ok) {
+        dispatch(signInFailure(data.message));
+        throw new Error("Failed to signup");
+      }
+    
+
+      const data = await response.json();
+      <ToastNotification message="user login"/>
+      dispatch(signInSuccess(data.data));
+     
+   
+      
+      navigate("/") 
+    } catch (error) {
+      console.error("Error during signup:", error.message);
+    }
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen ">
@@ -136,7 +172,52 @@ function Login() {
             </div>
           )}
           {activeTab === "login" && (
-            <div className="text-sm text-gray-600">Login to your account.</div>
+            <div className="text-sm text-gray-600">
+              <span className="text-md font-semibold font-serif">Signup</span>
+              <p className="mt-1 text-sm font-serif">
+                Create a new account and click signup when you're done.
+              </p>
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="email"
+                    className="text-lg font-serif font-semibold"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="ex: rupam"
+                    className="outline-none border-2 border-gray-200 p-2 rounded-xl font-serif text-md"
+                    onChange={handleValue}
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="password"
+                    className="text-lg font-serif font-semibold"
+                  >
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="ex: ********"
+                    className="outline-none border-2 border-gray-200 p-2 rounded-xl font-serif text-md"
+                    onChange={handleValue}
+                  />
+                </div>
+              </div>
+              <button
+                className="mt-2 border-2 border-gray-200 py-2 px-4 rounded-xl font-semibold font-serif hover:bg-black hover:text-white"
+                onClick={handleSignIn}
+              >
+                Signin
+              </button>
+            </div>
           )}
         </div>
       </div>

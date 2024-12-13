@@ -63,7 +63,10 @@ export const signinAuth=async(req,res,next)=>{
       
         res.status(200).cookie('access_token', token, {
             httpOnly: true,
-        }).json(rest);
+        }).json({
+            message:"signinsuceesfully",
+            data:rest
+        });
 
         
     } catch (error) {
@@ -123,3 +126,14 @@ export const googleAuth=async(req,res,next)=>{
     }
 
 }
+
+export const logout = async (req, res, next) => {
+    try {
+        res.clearCookie('access_token', { httpOnly: true });
+        res.status(200).json({
+            message: "Logout successfully"
+        });
+    } catch (error) {
+        next(error);
+    }
+};
