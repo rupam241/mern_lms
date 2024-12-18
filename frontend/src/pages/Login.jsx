@@ -10,8 +10,9 @@ import ToastNotification from "@/utils/ToastNotification";
 
 function Login() {
   const dispatch = useDispatch();
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("signup");
+  const [message, setMessage] = useState('');
   const [signupdata, setsignupdata] = useState({
     username: "",
     email: "",
@@ -39,8 +40,12 @@ function Login() {
       if (!response.ok) {
         throw new Error("Failed to signup");
       }
+      
 
-      <ToastNotification message={message}/>
+      setMessage(...message,"NAVIGATING TO LOGIN PAGE")
+
+      
+
       setActiveTab("login");
     } catch (error) {
       console.error("Error during signup:", error.message);
@@ -49,7 +54,7 @@ function Login() {
 
   const handleSignIn = async () => {
     try {
-      dispatch(signInStart);
+      dispatch(signInStart());
       const response = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -58,26 +63,27 @@ function Login() {
         body: JSON.stringify(signupdata),
       });
 
+      const data = await response.json();
       if (!response.ok) {
         dispatch(signInFailure(data.message));
-        throw new Error("Failed to signup");
+        throw new Error("Failed to login");
       }
-    
 
-      const data = await response.json();
-      <ToastNotification message="user login"/>
       dispatch(signInSuccess(data.data));
-     
-   
-      
-      navigate("/") 
+    
+      // Show success message
+      setMessage("Logged in successfully!");
+      setTimeout(()=>{
+        navigate("/")
+      },2000)
     } catch (error) {
-      console.error("Error during signup:", error.message);
+      console.error("Error during login:", error.message);
+      setMessage("Login failed. Please try again.");
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen ">
+    <div className="flex justify-center items-center min-h-screen">
       <div className="w-[400px] rounded-lg shadow-md p-4">
         {/* Tabs Navigation */}
         <div className="flex justify-between border-b-2 border-gray-200 bg-gray-50 p-2 rounded-t-md">
@@ -173,9 +179,9 @@ function Login() {
           )}
           {activeTab === "login" && (
             <div className="text-sm text-gray-600">
-              <span className="text-md font-semibold font-serif">Signup</span>
+              <span className="text-md font-semibold font-serif">Login</span>
               <p className="mt-1 text-sm font-serif">
-                Create a new account and click signup when you're done.
+                Enter your credentials and click login to continue.
               </p>
               <div className="flex flex-col gap-3">
                 <div className="flex flex-col">
@@ -221,6 +227,7 @@ function Login() {
           )}
         </div>
       </div>
+      <ToastNotification message={message} />
     </div>
   );
 }

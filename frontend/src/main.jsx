@@ -10,6 +10,7 @@ import Login from './pages/Login'
 import store, { persistor } from './app/store.js';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux'
+import Hero from './ComponentMain.jsx/Hero'
 
 
 const router=createBrowserRouter(
@@ -19,6 +20,8 @@ const router=createBrowserRouter(
     
     <Route path='' element={<Home/>}/>
     <Route path='login' element={<Login/>}/>
+
+
     
 
 
