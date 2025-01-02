@@ -3,6 +3,7 @@ import user from "../models/user.models.js"
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
 
+
 export const signupAuth=async(req,res,next)=>{
 
     const{username,email,password}=req.body;
@@ -102,7 +103,7 @@ export const googleAuth=async(req,res,next)=>{
             const newUser=new user({
                 email,
                 username:generatedUsername,
-                password:generatedPassWord,
+                password:hashedPassword,
                 profilePicture:photoUrl,
             })
 

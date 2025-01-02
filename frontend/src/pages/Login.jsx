@@ -73,9 +73,7 @@ function Login() {
     
       // Show success message
       setMessage("Logged in successfully!");
-      setTimeout(()=>{
-        navigate("/")
-      },2000)
+     navigate("/")
     } catch (error) {
       console.error("Error during login:", error.message);
       setMessage("Login failed. Please try again.");
